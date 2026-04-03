@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SignalChart from './SignalChart';
 import TimeSlider from './TimeSlider';
 import { X, MessageSquareWarning } from 'lucide-react';

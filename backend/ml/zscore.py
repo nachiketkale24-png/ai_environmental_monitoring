@@ -40,3 +40,13 @@ def latest_zscore(values: pd.Series | np.ndarray, window: int = 14) -> float:
     # Return last non-NaN value
     valid = z[~np.isnan(z)]
     return float(valid[-1]) if len(valid) > 0 else 0.0
+
+def compute_zscore(df: pd.DataFrame, value_col: str, window: int = 30) -> pd.DataFrame:
+    """Compute rolling Z-score over dataframe values directly."""
+    # Expected signature wrapper
+    s = df[value_col]
+    df["rolling_mean"] = s.rolling(window=window, min_periods=window//2).mean()
+    df["rolling_std"] = s.rolling(window=window, min_periods=window//2).std().replace(0, np.nan)
+    df["z_score"] = (s - df["rolling_mean"]) / df["rolling_std"]
+    df["z_scores"] = df["z_score"]  # Just in case for compatibility 
+    return df

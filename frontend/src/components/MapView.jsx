@@ -22,9 +22,17 @@ export default function MapView({ zones, onZoneSelect }) {
         />
 
         {features.map((feature) => {
+          let latlng;
           const coords = feature.geometry.coordinates; // [lng, lat]
-          // Leaflet expects [lat, lng] for markers
-          const latlng = [coords[1], coords[0]];
+          
+          if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+            // Grab the first point of the outer ring acting as a pseudo-centroid for the marker
+            const firstPt = feature.geometry.type === 'Polygon' ? coords[0][0] : coords[0][0][0];
+            latlng = [firstPt[1], firstPt[0]];
+          } else {
+            // Standard Point
+            latlng = [coords[1], coords[0]];
+          }
           
           const status = feature.properties.status_color || 'green'; // red | amber | green
           const score = feature.properties.current_score || 0;
