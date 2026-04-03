@@ -1,8 +1,8 @@
-from ai.claude_client import call_claude
+from ai.ollama_client import call_ollama
 
 async def narrate_alert(zone_id: str, signals: dict, z_scores: dict, score: float) -> str:
     """
-    Generate a two-sentence narrative via Claude for an alert.
+    Generate a two-sentence narrative via local AI for an alert.
     
     Args:
         zone_id: String id (e.g. mh07)
@@ -18,5 +18,5 @@ in plain English for a marine policy analyst. Be specific about the risk and rec
 one action. Zone: {zone_id}, Signals: {signals}, Z-scores: {z_scores}, \
 Priority score: {score}/100"""
 
-    narrative = await call_claude(prompt=prompt)
+    narrative = await call_ollama(prompt=prompt)
     return narrative.strip()

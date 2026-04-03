@@ -1,5 +1,5 @@
 import json
-from ai.claude_client import call_claude
+from ai.ollama_client import call_ollama
 
 SYSTEM_PROMPT = """You are NEREID, an AI environmental intelligence assistant. \
 You help marine policy analysts understand which environmental zones \
@@ -8,7 +8,7 @@ Format: rank zones by urgency, explain why, recommend one action per zone."""
 
 async def handle_operator_query(query: str, alerts: list[dict]) -> str:
     """
-    Handles a query by formatting active alerts as context and querying Claude.
+    Handles a query by formatting active alerts as context and querying local AI.
     
     Args:
         query: User NLP query.
@@ -36,5 +36,5 @@ async def handle_operator_query(query: str, alerts: list[dict]) -> str:
         f"Please provide an analysis based on this context and the system instructions."
     )
     
-    response_text = await call_claude(prompt=user_prompt, system=SYSTEM_PROMPT)
+    response_text = await call_ollama(prompt=user_prompt, system=SYSTEM_PROMPT)
     return response_text
