@@ -4,8 +4,19 @@ import { useState } from 'react';
 
 const API_BASE = "http://localhost:8000";
 
-export default function AlertFeed({ alerts, refreshAlerts }) {
+export default function AlertFeed({ alerts, refreshAlerts, isInitialLoading }) {
   
+  if (isInitialLoading) {
+    return (
+      <div className="feed-area" style={{ padding: '24px' }}>
+        <h3 style={{ margin: '0 0 24px 0', color: 'var(--text-dim)' }}>Loading Feed...</h3>
+        {[1,2,3].map(i => (
+          <div key={i} className="skeleton-pulse" style={{ height: '140px', width: '100%', backgroundColor: 'var(--surface)', borderRadius: '12px', marginBottom: '16px' }} />
+        ))}
+      </div>
+    );
+  }
+
   if (!alerts || alerts.length === 0) {
     return (
       <div className="feed-area" style={styles.emptyState}>

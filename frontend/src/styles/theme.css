@@ -112,3 +112,15 @@ body {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
+
+/* Skeleton Loading CSS */
+.skeleton-pulse {
+  background: linear-gradient(-90deg, var(--surface) 0%, var(--border) 50%, var(--surface) 100%);
+  background-size: 400% 400%;
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: 0% 0%; }
+  100% { background-position: -135% 0%; }
+}

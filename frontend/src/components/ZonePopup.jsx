@@ -3,18 +3,16 @@ import SignalChart from './SignalChart';
 import TimeSlider from './TimeSlider';
 import { X, MessageSquareWarning } from 'lucide-react';
 
-export default function ZonePopup({ zoneId, alerts, onClose }) {
-  // We keep a 'days' state controlled by TimeSlider
-  // Because it goes "days ago", we map 0 -> 30 days, 29 -> 1 day for charting?
-  // User asked: html range input min=0 max=29 (days ago), default=0.
-  // We feed `days` prop to SignalChart. If slider is 0 (Today), show 30 days? 
-  // Let's interpret slider value as an absolute bounded slice, or just keep 'days=30', 
-  // actually Recharts will handle 30 days. The prompt says:
-  // "Below slider: ← 30 days ago | Today →" -> So if value is e.g. 0, we can just pass (30 - value) as 'days' array limit.
+export default function ZonePopup({ zoneId, alerts, onClose, forceSliderValue }) {
   const [sliderVal, setSliderVal] = useState(0); // 0 = Today
   
-  // Actually, standardizing the slice:
-  // If sliderVal = 0, we show 30 days. If sliderVal = 29, we show 1 day.
+  // Sync wrapper if demo mode forces a value
+  useEffect(() => {
+    if (forceSliderValue !== null && forceSliderValue !== undefined) {
+      setSliderVal(forceSliderValue);
+    }
+  }, [forceSliderValue]);
+
   const chartDays = 30 - sliderVal;
 
   // Find latest narrative if available in contextual alerts

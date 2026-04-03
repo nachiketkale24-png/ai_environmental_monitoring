@@ -1,106 +1,105 @@
-import React, { useState } from 'react';
-import useQuery from '../hooks/useQuery';
+export default function QueryPanel({ queryResponse, loading, onClose, onZoneChipClick }) {
+  // Regex to find zone patterns like MH-07, mh07, gj-03, etc.
+  const zoneRegex = /\b(mh-?07|mh-?12|mh-?15|gj-?03|gj-?08|ka-?02)\b/gi;
 
-export default function QueryPanel() {
-  const [question, setQuestion] = useState('');
-  const { response, loading, submitQuery } = useQuery();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (question.trim()) {
-      submitQuery(question);
-    }
+  const renderTextWithChips = (text) => {
+    if (!text) return null;
+    const parts = text.split(zoneRegex);
+    return parts.map((part, i) => {
+      if (part.match(zoneRegex)) {
+        const cleanZone = part.replace('-', '').toLowerCase();
+        return (
+          <button 
+            key={i} 
+            style={styles.chip} 
+            onClick={() => onZoneChipClick(cleanZone)}
+          >
+            {part.toUpperCase()}
+          </button>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
   };
 
   return (
-    <div className="query-panel glass-card" id="query-panel">
-      <h3 className="query-panel__title">🤖 Ask NEREID</h3>
-      <form className="query-panel__form" onSubmit={handleSubmit}>
-        <input
-          id="query-input"
-          type="text"
-          placeholder="What needs attention?"
-          value={question}
-          onChange={e => setQuestion(e.target.value)}
-          className="query-panel__input"
-          disabled={loading}
-        />
-        <button
-          id="query-submit"
-          type="submit"
-          className="query-panel__btn"
-          disabled={loading || !question.trim()}
-        >
-          {loading ? '⏳' : '→'}
-        </button>
-      </form>
-      {response && (
-        <div className="query-panel__response">
-          <p>{response.answer}</p>
-          {response.referenced_alerts?.length > 0 && (
-            <span className="query-panel__refs">
-              Refs: {response.referenced_alerts.join(', ')}
-            </span>
+    <div style={styles.overlay} onClick={onClose}>
+      <div style={styles.panel} onClick={e => e.stopPropagation()}>
+        <div style={styles.header}>
+          <strong style={{ color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Ask NEREID
+          </strong>
+          <button onClick={onClose} style={styles.closeBtn}>✕</button>
+        </div>
+        
+        <div style={styles.content}>
+          {loading ? (
+            <div style={styles.loadingContainer}>
+              <span className="typing-dots">Analyzing all zones...</span>
+            </div>
+          ) : (
+            <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '0.95rem' }}>
+              {renderTextWithChips(queryResponse)}
+            </div>
           )}
         </div>
-      )}
-
-      <style>{`
-        .query-panel {
-          padding: 1rem;
-        }
-        .query-panel__title {
-          font-size: 0.95rem;
-          font-weight: 600;
-          margin-bottom: 0.75rem;
-        }
-        .query-panel__form {
-          display: flex;
-          gap: 0.5rem;
-        }
-        .query-panel__input {
-          flex: 1;
-          padding: 0.5rem 0.75rem;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-color);
-          border-radius: var(--radius-sm);
-          color: var(--text-primary);
-          font-family: inherit;
-          font-size: 0.85rem;
-          outline: none;
-          transition: border-color var(--transition-fast);
-        }
-        .query-panel__input:focus { border-color: var(--accent-cyan); }
-        .query-panel__input::placeholder { color: var(--text-muted); }
-        .query-panel__btn {
-          padding: 0.5rem 1rem;
-          background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
-          border: none;
-          border-radius: var(--radius-sm);
-          color: #0a0f1c;
-          font-weight: 600;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: opacity var(--transition-fast);
-        }
-        .query-panel__btn:hover { opacity: 0.9; }
-        .query-panel__btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .query-panel__response {
-          margin-top: 0.75rem;
-          padding: 0.75rem;
-          background: var(--gradient-card);
-          border-radius: var(--radius-sm);
-          font-size: 0.85rem;
-          color: var(--text-secondary);
-          line-height: 1.5;
-        }
-        .query-panel__refs {
-          display: block;
-          margin-top: 0.5rem;
-          font-size: 0.7rem;
-          color: var(--text-muted);
-        }
-      `}</style>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  overlay: {
+    position: 'absolute',
+    top: '56px',
+    left: 0,
+    width: '100%',
+    height: 'calc(100vh - 56px)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 999,
+  },
+  panel: {
+    width: '100%',
+    backgroundColor: 'var(--surface)',
+    borderBottom: '1px solid var(--border)',
+    padding: '24px',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+    maxHeight: '400px',
+    overflowY: 'auto'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px'
+  },
+  closeBtn: {
+    background: 'none',
+    border: 'none',
+    color: 'var(--text-dim)',
+    cursor: 'pointer',
+    fontSize: '1.2rem'
+  },
+  content: {
+    color: 'var(--text)'
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100px',
+    color: 'var(--accent)',
+    fontStyle: 'italic'
+  },
+  chip: {
+    background: 'var(--accent)',
+    color: 'var(--bg)',
+    border: 'none',
+    borderRadius: '12px',
+    padding: '2px 8px',
+    margin: '0 4px',
+    fontSize: '0.8rem',
+    fontWeight: 'bold',
+    cursor: 'pointer'
+  }
+};

@@ -9,9 +9,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 
-from db.database import close_db
+from db.database import close_db, get_db
 from db.models import init_db
+from data.seed_alerts import seed
 from routes.alerts import router as alerts_router
 from routes.zones import router as zones_router
 from routes.signals import router as signals_router
@@ -26,6 +29,16 @@ from routes.feedback import router as feedback_router
 async def lifespan(app: FastAPI):
     # ── Startup ──
     await init_db()
+    
+    db = await get_db()
+    cursor = await db.execute("SELECT COUNT(*) as cnt FROM alerts")
+    row = await cursor.fetchone()
+    if row and row['cnt'] == 0:
+        import threading
+        t = threading.Thread(target=seed)
+        t.start()
+        t.join()
+        
     yield
     # ── Shutdown ──
     await close_db()
@@ -57,13 +70,21 @@ app.include_router(signals_router)
 app.include_router(query_router)
 app.include_router(feedback_router)
 
+# ── Mount Static Files ──
+static_path = os.path.join(os.path.dirname(__file__), "data", "signals")
+if os.path.exists(static_path):
+    app.mount("/data/signals", StaticFiles(directory=static_path), name="signals")
+
 
 # ---------------------------------------------------------------------------
 # Health-check
 # ---------------------------------------------------------------------------
 @app.get("/health", tags=["system"])
 async def health_check():
-    return {"status": "ok", "service": "NEREID"}
+    db = await get_db()
+    cursor = await db.execute("SELECT COUNT(*) as cnt FROM alerts")
+    row = await cursor.fetchone()
+    return {"status": "ok", "service": "NEREID", "alerts_count": row['cnt'] if row else 0}
 
 
 # ---------------------------------------------------------------------------
