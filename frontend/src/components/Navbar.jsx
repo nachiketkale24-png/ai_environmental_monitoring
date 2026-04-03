@@ -1,109 +1,159 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
+import { Sun, Moon, Search } from 'lucide-react';
+import './theme.css';
 
-export default function Navbar() {
-  const [theme, setTheme] = useState('dark');
-  const [query, setQuery] = useState('');
+const API_BASE = "http://localhost:8000";
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+export default function Navbar({ darkMode, setDarkMode }) {
+  const [query, setQuery] = useState("");
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const handleQuery = async (e) => {
+    if (e.key === 'Enter' && query.trim()) {
+      setLoading(true);
+      try {
+        const res = await axios.post(`${API_BASE}/query`, { query });
+        setResponse(res.data.response);
+      } catch (err) {
+        setResponse("System offline or cannot connect to local AI node.");
+      }
+      setLoading(false);
+    }
+  };
 
   return (
-    <nav className="navbar glass-card" id="main-navbar">
-      <div className="navbar__brand">
-        <span className="navbar__logo">🌊</span>
-        <h1 className="navbar__title">NEREID</h1>
-        <span className="navbar__subtitle">Environmental Monitor</span>
-      </div>
-      <div className="navbar__search">
-        <input
-          id="navbar-search"
-          type="text"
-          placeholder="What needs attention?"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          className="navbar__input"
-        />
-      </div>
-      <div className="navbar__actions">
-        <button
-          id="theme-toggle"
-          className="navbar__btn"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
+    <div style={styles.nav}>
+      <div style={styles.left}>
+        <span style={styles.logo}>🌊 NEREID</span>
       </div>
 
-      <style>{`
-        .navbar {
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          padding: 0.75rem 1.5rem;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          border-radius: 0;
-          border-top: none;
-          border-left: none;
-          border-right: none;
-        }
-        .navbar__brand {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        .navbar__logo { font-size: 1.5rem; }
-        .navbar__title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .navbar__subtitle {
-          font-size: 0.75rem;
-          color: var(--text-muted);
-          font-weight: 400;
-        }
-        .navbar__search { flex: 1; max-width: 500px; }
-        .navbar__input {
-          width: 100%;
-          padding: 0.5rem 1rem;
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-color);
-          border-radius: var(--radius-lg);
-          color: var(--text-primary);
-          font-family: inherit;
-          font-size: 0.875rem;
-          outline: none;
-          transition: border-color var(--transition-fast);
-        }
-        .navbar__input:focus {
-          border-color: var(--accent-cyan);
-        }
-        .navbar__input::placeholder {
-          color: var(--text-muted);
-        }
-        .navbar__btn {
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-color);
-          border-radius: var(--radius-sm);
-          padding: 0.5rem 0.75rem;
-          cursor: pointer;
-          font-size: 1.1rem;
-          transition: all var(--transition-fast);
-        }
-        .navbar__btn:hover {
-          border-color: var(--accent-cyan);
-          box-shadow: var(--shadow-glow);
-        }
-      `}</style>
-    </nav>
+      <div style={styles.center}>
+        <div style={styles.searchContainer}>
+          <Search size={18} color="var(--text-dim)" style={{marginLeft: 12}} />
+          <input 
+            type="text" 
+            placeholder="What needs attention right now?" 
+            style={styles.input}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleQuery}
+            disabled={loading}
+          />
+        </div>
+        
+        {/* Dropdown for response */}
+        {response && (
+          <div style={styles.responseDropdown}>
+            <div style={styles.responseHeader}>
+              <strong>Ask NEREID</strong>
+              <button 
+                onClick={() => setResponse(null)} 
+                style={{background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer'}}
+              >
+                ✕
+              </button>
+            </div>
+            <p style={{fontSize: '0.9rem', lineHeight: '1.5', margin: 0, whiteSpace: 'pre-wrap'}}>{response}</p>
+          </div>
+        )}
+      </div>
+
+      <div style={styles.right}>
+        <button 
+          onClick={() => setDarkMode(!darkMode)}
+          style={styles.themeToggle}
+        >
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+      </div>
+    </div>
   );
 }
+
+const styles = {
+  nav: {
+    gridArea: 'nav',
+    position: 'relative',
+    height: '56px',
+    backgroundColor: 'var(--surface)',
+    borderBottom: '1px solid var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 24px',
+    zIndex: 1000,
+  },
+  left: { width: '25%' },
+  logo: {
+    color: 'var(--accent)',
+    fontFamily: '"Syne", sans-serif',
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    letterSpacing: '1px'
+  },
+  center: { 
+    width: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'relative'
+  },
+  searchContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'var(--bg)',
+    borderRadius: '8px',
+    border: '1px solid var(--border)',
+    width: '100%',
+    maxWidth: '500px',
+    height: '36px',
+    transition: 'border 0.2s',
+  },
+  input: {
+    flex: 1,
+    background: 'none',
+    border: 'none',
+    color: 'var(--text)',
+    padding: '0 12px',
+    fontSize: '0.9rem',
+    outline: 'none',
+  },
+  right: { 
+    width: '25%', 
+    display: 'flex', 
+    justifyContent: 'flex-end' 
+  },
+  themeToggle: {
+    background: 'none',
+    border: 'none',
+    color: 'var(--text)',
+    cursor: 'pointer',
+    padding: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '4px',
+  },
+  responseDropdown: {
+    position: 'absolute',
+    top: '45px',
+    width: '100%',
+    maxWidth: '500px',
+    backgroundColor: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    padding: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+    zIndex: 1001,
+  },
+  responseHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '8px',
+    color: 'var(--accent)',
+    fontSize: '0.85rem',
+    textTransform: 'uppercase'
+  }
+};

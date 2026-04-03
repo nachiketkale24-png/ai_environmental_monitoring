@@ -1,21 +1,59 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Navbar from './components/Navbar';
-import Dashboard from './pages/Dashboard';
-import ZoneDetail from './pages/ZoneDetail';
+import MapView from './components/MapView';
+import AlertFeed from './components/AlertFeed';
 import './styles/theme.css';
 
+const API_BASE = "http://localhost:8000";
+
 function App() {
+  const [darkMode, setDarkMode] = useState(true);
+  const [alerts, setAlerts] = useState([]);
+  const [zones, setZones] = useState(null);
+  const [selectedZone, setSelectedZone] = useState(null);
+
+  // Sync dark mode class on body
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.remove('light-theme');
+    } else {
+      document.body.classList.add('light-theme');
+    }
+  }, [darkMode]);
+
+  const fetchData = async () => {
+    try {
+      // Parallel fetch for speed
+      const [alertRes, zoneRes] = await Promise.all([
+        axios.get(`${API_BASE}/alerts`),
+        axios.get(`${API_BASE}/zones`)
+      ]);
+      setAlerts(alertRes.data.alerts || []);
+      setZones(zoneRes.data);
+    } catch (err) {
+      console.error("Failed to fetch initial NEREID data:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <BrowserRouter>
-      <Navbar />
-      <main className="app-main">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/zone/:zoneId" element={<ZoneDetail />} />
-        </Routes>
-      </main>
-    </BrowserRouter>
+    <div className="app-container">
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      
+      <MapView 
+        zones={zones} 
+        onZoneSelect={setSelectedZone} 
+      />
+      
+      <AlertFeed 
+        alerts={alerts} 
+        refreshAlerts={fetchData} 
+      />
+    </div>
   );
 }
 
