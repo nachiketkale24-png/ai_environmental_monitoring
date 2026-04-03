@@ -1,65 +1,50 @@
-"""
-NEREID — Zones Route
-GET /zones  →  GeoJSON zone data with current status color
-"""
-
 import json
 from pathlib import Path
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from db.database import get_db
-from config import DATA_DIR
 
 router = APIRouter(prefix="/zones", tags=["zones"])
-
-_geojson_cache: dict | None = None
-
-
-def _load_geojson() -> dict:
-    """Load zones.geojson from the data directory (cached)."""
-    global _geojson_cache
-    if _geojson_cache is None:
-        geojson_path = Path(DATA_DIR) / "zones.geojson"
-        with open(geojson_path, "r") as f:
-            _geojson_cache = json.load(f)
-    return _geojson_cache
-
 
 @router.get("")
 async def get_zones():
     """
-    Return GeoJSON FeatureCollection with each zone's latest status
-    derived from the most recent alert score.
+    Reads zones.geojson and binds the highest scoring active alert status 
+    color per zone.
     """
-    geojson = _load_geojson()
+    # Load GeoJSON purely for static physical geometries
+    data_path = Path(__file__).resolve().parent.parent / "data" / "zones.geojson"
+    if not data_path.exists():
+        return JSONResponse({"error": "GeoJSON missing"}, status_code=500)
+        
+    with open(data_path, "r", encoding="utf-8") as f:
+        geojson = json.load(f)
+        
     db = await get_db()
-
-    # Get latest alert score per zone for status colouring
+    
+    # Extract only the active highest score per zone
     cursor = await db.execute("""
-        SELECT zone_id, score, status
+        SELECT zone_id, MAX(score) as max_score
         FROM alerts
-        WHERE id IN (
-            SELECT MAX(id) FROM alerts GROUP BY zone_id
-        )
+        WHERE status = 'active'
+        GROUP BY zone_id
     """)
-    latest = {row["zone_id"]: dict(row) for row in await cursor.fetchall()}
-
-    # Enrich each feature with current status
+    rows = await cursor.fetchall()
+    zone_scores = {row["zone_id"]: float(row["max_score"]) for row in rows}
+    
     for feature in geojson.get("features", []):
-        zone_id = feature["properties"].get("zone_id", "")
-        alert_info = latest.get(zone_id, {})
-        score = alert_info.get("score", 0)
-
-        # Derive colour: green < 2σ, amber 2-3σ, red > 3σ
-        if score >= 3.0:
-            color = "red"
-        elif score >= 2.0:
-            color = "amber"
+        z_id = feature["properties"]["zone_id"]
+        score = zone_scores.get(z_id, 0.0)
+        
+        # 'red'|'amber'|'green'
+        if score >= 60.0:
+            status_color = 'red'
+        elif score >= 35.0:
+            status_color = 'amber'
         else:
-            color = "green"
-
+            status_color = 'green'
+            
         feature["properties"]["current_score"] = score
-        feature["properties"]["current_status"] = alert_info.get("status", "normal")
-        feature["properties"]["color"] = color
-
+        feature["properties"]["status_color"] = status_color
+        
     return JSONResponse(content=geojson)

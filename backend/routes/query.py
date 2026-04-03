@@ -1,32 +1,38 @@
-"""
-NEREID — Query Route
-POST /query  →  Claude NL query handler ("What needs attention?")
-"""
-
-from fastapi import APIRouter
 from pydantic import BaseModel
-from ai.query_handler import handle_query
+from fastapi import APIRouter
+import json
+from db.database import get_db
+from ai.query_handler import handle_operator_query
 
 router = APIRouter(prefix="/query", tags=["query"])
 
-
 class QueryRequest(BaseModel):
-    question: str
-    context: dict | None = None  # optional zone/time filters
+    query: str
 
-
-class QueryResponse(BaseModel):
-    answer: str
-    referenced_alerts: list[int] = []
-    confidence: float = 0.0
-
-
-@router.post("", response_model=QueryResponse)
-async def query_claude(request: QueryRequest):
+@router.post("")
+async def submit_query(body: QueryRequest):
     """
-    Accept a natural-language question from the operator,
-    run it through Claude with context from the alert store,
-    and return a ranked explanation.
+    Receives NLP `query`, extracts top 5 active DB alerts as context,
+    runs them through Claude via `query_handler`, and returns text natively. 
     """
-    result = await handle_query(request.question, request.context)
-    return result
+    db = await get_db()
+    cursor = await db.execute(
+        "SELECT zone_id, score, signals, narrative "
+        "FROM alerts WHERE status = 'active' ORDER BY score DESC LIMIT 5"
+    )
+    rows = await cursor.fetchall()
+    
+    # Format out rows into clean dicts to serialize context properly
+    alerts = []
+    for r in rows:
+        a_dict = dict(r)
+        if isinstance(a_dict.get('signals'), str):
+            try:
+                a_dict['signals'] = json.loads(a_dict['signals'])
+            except json.JSONDecodeError:
+                pass
+        alerts.append(a_dict)
+        
+    response_text = await handle_operator_query(body.query, alerts)
+    
+    return {"response": response_text}

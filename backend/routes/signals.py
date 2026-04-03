@@ -1,62 +1,42 @@
-"""
-NEREID — Signals Route
-GET /signals/{zone_id}  →  time-series data for charts
-"""
-
-from pathlib import Path
 from fastapi import APIRouter, Query, HTTPException
+from pathlib import Path
 import pandas as pd
-from config import DATA_DIR
+from ml.baseline import fit_baseline
+from ml.zscore import compute_zscore
 
 router = APIRouter(prefix="/signals", tags=["signals"])
-
-
-def _load_signal(zone_id: str, signal_type: str) -> pd.DataFrame:
-    """Load a signal CSV for a given zone."""
-    filename = f"{zone_id}_{signal_type}.csv"
-    filepath = Path(DATA_DIR) / "signals" / filename
-    if not filepath.exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"Signal file not found: {filename}"
-        )
-    df = pd.read_csv(filepath, parse_dates=["ds"])
-    return df
-
 
 @router.get("/{zone_id}")
 async def get_signals(
     zone_id: str,
-    signal: str | None = Query(None, description="Signal type: sst, chl, wind"),
-    days: int = Query(30, ge=1, le=180, description="Number of days of history"),
+    days: int = Query(30, ge=1, le=180),
+    signal: str = Query("sst", description="Signal CSV type e.g. sst, chl, wind")
 ):
     """
-    Return time-series signal data for a zone.
-    If no signal type specified, returns all available signals.
+    Reads the associated zone CSV file and returns 
+    {dates: [...], values: [...], baseline: [...], z_scores: [...]}
     """
-    signal_types = [signal] if signal else ["sst", "chl", "wind"]
-    result: dict = {"zone_id": zone_id, "signals": {}}
-
-    for sig in signal_types:
-        try:
-            df = _load_signal(zone_id, sig)
-        except HTTPException:
-            continue
-
-        # Filter to requested day range
-        if not df.empty:
-            cutoff = df["ds"].max() - pd.Timedelta(days=days)
-            df = df[df["ds"] >= cutoff]
-
-        result["signals"][sig] = {
-            "dates": df["ds"].dt.strftime("%Y-%m-%d").tolist(),
-            "values": df["y"].tolist(),
-        }
-
-    if not result["signals"]:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No signal data found for zone {zone_id}"
-        )
-
-    return result
+    csv_path = Path(__file__).resolve().parent.parent / "data" / "signals" / f"{zone_id}_{signal}.csv"
+    
+    if not csv_path.exists():
+        raise HTTPException(status_code=404, detail=f"Signal Data '{zone_id}_{signal}.csv' not found.")
+        
+    df = pd.read_csv(csv_path)
+    
+    # Check if df has generic ds/y cols from older generator and map them
+    if "ds" in df.columns and "y" in df.columns:
+        df = df.rename(columns={"ds": "date", "y": "value"})
+        
+    # Trim to days (Assuming dates are ordered ascending in generated CSVs)
+    df = df.tail(days).copy()
+    
+    # Rerun ML logic for realtime graphing limits
+    df = fit_baseline(df, "date", "value")
+    df = compute_zscore(df, "value", window=14)
+    
+    return {
+        "dates": df["date"].astype(str).tolist(),
+        "values": [round(v, 4) for v in df["value"].tolist()],
+        "baseline": [round(b, 4) for b in df["baseline"].tolist()],
+        "z_scores": [round(z, 4) for z in df["z_score"].tolist()]
+    }
