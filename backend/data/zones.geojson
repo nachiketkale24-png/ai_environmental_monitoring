@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "mh07", "name": "Mumbai South Coast", "region": "Maharashtra" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[72.80, 18.88], [72.88, 18.88], [72.88, 18.94], [72.80, 18.94], [72.80, 18.88]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "mh12", "name": "Thane Creek", "region": "Maharashtra" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[72.95, 19.05], [73.03, 19.05], [73.03, 19.12], [72.95, 19.12], [72.95, 19.05]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "mh15", "name": "Ratnagiri Coast", "region": "Maharashtra" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[73.25, 16.95], [73.35, 16.95], [73.35, 17.05], [73.25, 17.05], [73.25, 16.95]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "gj03", "name": "Gulf of Kutch", "region": "Gujarat" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[69.60, 22.30], [69.75, 22.30], [69.75, 22.45], [69.60, 22.45], [69.60, 22.30]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "gj08", "name": "Saurashtra Coast", "region": "Gujarat" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[70.30, 21.50], [70.45, 21.50], [70.45, 21.65], [70.30, 21.65], [70.30, 21.50]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "zone_id": "ka02", "name": "Karwar Bay", "region": "Karnataka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[74.08, 14.78], [74.18, 14.78], [74.18, 14.88], [74.08, 14.88], [74.08, 14.78]]]
+      }
+    }
+  ]
+}
