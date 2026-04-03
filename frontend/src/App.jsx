@@ -3,6 +3,7 @@ import axios from 'axios';
 import Navbar from './components/Navbar';
 import MapView from './components/MapView';
 import AlertFeed from './components/AlertFeed';
+import ZonePopup from './components/ZonePopup';
 import './styles/theme.css';
 
 const API_BASE = "http://localhost:8000";
@@ -53,6 +54,14 @@ function App() {
         alerts={alerts} 
         refreshAlerts={fetchData} 
       />
+
+      {selectedZone && (
+        <ZonePopup 
+          zoneId={selectedZone}
+          alerts={alerts}
+          onClose={() => setSelectedZone(null)}
+        />
+      )}
     </div>
   );
 }

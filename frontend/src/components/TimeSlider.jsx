@@ -1,61 +1,73 @@
-import React from 'react';
+export default function TimeSlider({ value, onChange }) {
+  // value represents "days ago". 0 = Today, 29 = 30 days ago.
+  
+  const handleInput = (e) => {
+    onChange(parseInt(e.target.value, 10));
+  };
 
-export default function TimeSlider({ value, onChange, min = 7, max = 90 }) {
+  const getLabel = () => {
+    if (value === 0) return "Today";
+    if (value === 1) return "1 Day Ago";
+    return `${value} Days Ago`;
+  };
+
   return (
-    <div className="time-slider" id="time-slider">
-      <label className="time-slider__label">
-        📅 Time Range: <strong>{value} days</strong>
-      </label>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={e => onChange(Number(e.target.value))}
-        className="time-slider__input"
-      />
-      <div className="time-slider__ticks">
-        <span>7d</span>
-        <span>30d</span>
-        <span>60d</span>
-        <span>90d</span>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h4 style={styles.title}>TIME SCRUBBER</h4>
+        <span style={styles.currentVal}>{getLabel()}</span>
       </div>
-
-      <style>{`
-        .time-slider {
-          padding: 0.75rem 0;
-        }
-        .time-slider__label {
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-          display: block;
-          margin-bottom: 0.5rem;
-        }
-        .time-slider__input {
-          width: 100%;
-          -webkit-appearance: none;
-          height: 4px;
-          background: var(--border-color);
-          border-radius: 2px;
-          outline: none;
-        }
-        .time-slider__input::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: var(--accent-cyan);
-          cursor: pointer;
-          box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
-        }
-        .time-slider__ticks {
-          display: flex;
-          justify-content: space-between;
-          font-size: 0.65rem;
-          color: var(--text-muted);
-          margin-top: 0.25rem;
-        }
-      `}</style>
+      
+      <input 
+        type="range" 
+        min="0" 
+        max="29" 
+        value={value} 
+        onChange={handleInput}
+        style={styles.slider}
+        className="time-slider"
+      />
+      
+      <div style={styles.footer}>
+        <span>← 30 Days Ago</span>
+        <span>Today →</span>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: '16px 0',
+    borderTop: '1px solid var(--border)'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '12px'
+  },
+  title: {
+    margin: 0,
+    fontSize: '0.85rem',
+    color: 'var(--text-dim)',
+    letterSpacing: '1px'
+  },
+  currentVal: {
+    fontSize: '0.9rem',
+    fontWeight: 'bold',
+    color: 'var(--accent)'
+  },
+  slider: {
+    width: '100%',
+    cursor: 'pointer',
+    accentColor: 'var(--accent)'
+  },
+  footer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '8px',
+    fontSize: '0.75rem',
+    color: 'var(--text-dim)'
+  }
+};
