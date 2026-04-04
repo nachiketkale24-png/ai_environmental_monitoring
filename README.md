@@ -60,19 +60,19 @@ Here is a visual breakdown of the NEREID Tactical UI in action:
 <div align="center">
   
 ### 1. Global Context & Entry Status
-<img src="doc-images/image1.jpg" width="100%" alt="Entry and Context Map View" />
+<img src="doc-images/image1.jpeg" width="100%" alt="Entry and Context Map View" />
 **Description:** The primary map interface. Shows live Sector Entry Statuses (like MB-01 PORT_ENT), real-time environmental telemetry (SST Avg, Wind Stress), and the aggregate Regional Risk Index. Map markers indicate dynamic anomaly severity across Mumbai's coastline.
 
 ### 2. Insight & Explanation Breakdown
-<img src="doc-images/image2.jpg" width="100%" alt="Insight and AI Explanation" />
+<img src="doc-images/image2.jpeg" width="100%" alt="Insight and AI Explanation" />
 **Description:** Detailed impact modeling triggered by a High-Risk Coastal Flooding event. Features local AI correlating abnormal SST (+3.80) with sustained wind patterns, rendering inundation probabilities (88%), and projecting critical infrastructure failure.
 
 ### 3. Tactical Fog Decision & Action Dashboard
-<img src="doc-images/image3.jpg" width="100%" alt="Tactical Protocol Dashboard" />
+<img src="doc-images/image3.jpeg" width="100%" alt="Tactical Protocol Dashboard" />
 **Description:** The action center. When a regional failure emerges (e.g., Zone Alpha-7 Impact Radius), this screen displays real-time protocol logs and active asset readiness. It provides immediate triggers to Initiate Regional Alerts, Notify Authorities, or Deploy Emergency Responses.
 
 ### 4. Automated Anomaly Detection Matrix
-<img src="doc-images/image4.jpg" width="100%" alt="Risk Matrix Priority Queue" />
+<img src="doc-images/image4.jpeg" width="100%" alt="Risk Matrix Priority Queue" />
 **Description:** A live priority queue sorting marine sectors by Z-Score Index. Distinguishes Critical (MB-04 Versova at 9.42) from Elevated (MB-02 Worli) threats, visualizing threat proximity and providing quick export and escalation paths.
 
 </div>
