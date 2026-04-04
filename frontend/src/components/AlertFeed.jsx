@@ -1,224 +1,122 @@
-import { ShieldCheck, Target, AlertTriangle } from 'lucide-react';
-import axios from 'axios';
-import { useState } from 'react';
+import React from 'react';
 
-const API_BASE = "http://localhost:8000";
-
-export default function AlertFeed({ alerts, refreshAlerts, isInitialLoading }) {
-  
+const AlertFeed = ({ alerts, refreshAlerts, isInitialLoading, onSelectZone }) => {
   if (isInitialLoading) {
     return (
-      <div className="feed-area" style={{ padding: '24px' }}>
-        <h3 style={{ margin: '0 0 24px 0', color: 'var(--text-dim)' }}>Loading Feed...</h3>
-        {[1,2,3].map(i => (
-          <div key={i} className="skeleton-pulse" style={{ height: '140px', width: '100%', backgroundColor: 'var(--surface)', borderRadius: '12px', marginBottom: '16px' }} />
+      <div className="flex flex-col gap-4 mt-4">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-24 skeleton-pulse tactical-border rounded-sm"></div>
         ))}
       </div>
     );
   }
 
-  if (!alerts || alerts.length === 0) {
-    return (
-      <div className="feed-area" style={styles.emptyState}>
-        <ShieldCheck size={48} color="var(--green)" style={{ marginBottom: 16 }} />
-        <h2 style={{ margin: 0, color: 'var(--text)' }}>All Zones Nominal</h2>
-        <p style={{ color: 'var(--text-dim)' }}>No active risks detected across monitored regions.</p>
-      </div>
-    );
-  }
+  // Sort alerts by severity & z-score
+  const sortedAlerts = [...alerts].sort((a, b) => b.highest_z - a.highest_z);
 
   return (
-    <div className="feed-area" style={{ padding: '24px' }}>
-      <div style={styles.header}>
-        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Target size={20} color="var(--accent)" />
-          ACTIVE ALERTS
-        </h3>
-        <span style={styles.badge}>{alerts.length}</span>
+    <div className="flex flex-col h-full">
+      <div className="flex justify-between items-end mb-4 font-mono text-[10px] text-nereid-textMuted tracking-wider">
+        <span>LIVE PRIORITY QUEUE // SORTED BY Z-SCORE</span>
+        <span>LAST UPDATE: T+00:00:42</span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {alerts.map(alert => (
-          <AlertCard key={alert.id} alert={alert} refreshAlerts={refreshAlerts} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AlertCard({ alert, refreshAlerts }) {
-  const [loading, setLoading] = useState(false);
-  const [confirmedMessage, setConfirmedMessage] = useState('');
-
-  const handleFeedback = async (verdict) => {
-    setLoading(true);
-    try {
-      await axios.post(`${API_BASE}/feedback`, {
-        alert_id: alert.id,
-        verdict: verdict // 'validated' | 'false_positive'
-      });
-      setConfirmedMessage(`Marked as ${verdict.replace('_', ' ')}`);
-      // Wait a moment then refresh parent
-      setTimeout(() => {
-        refreshAlerts();
-      }, 1500);
-    } catch(e) {
-      console.error(e);
-      setLoading(false);
-    }
-  };
-
-  if (confirmedMessage) {
-    return (
-      <div style={{...styles.card, justifyContent: 'center', alignItems: 'center', minHeight: '120px'}}>
-        <ShieldCheck color="var(--green)" size={24} style={{marginBottom: '8px'}} />
-        <span style={{color: 'var(--green)', fontSize: '0.9rem'}}>{confirmedMessage}</span>
-      </div>
-    );
-  }
-
-  let color = 'var(--green)';
-  if (alert.score >= 60) color = 'var(--red)';
-  else if (alert.score >= 35) color = 'var(--amber)';
-
-  const parsedSignals = typeof alert.signals === 'string' ? JSON.parse(alert.signals) : alert.signals;
-  const parsedZ = typeof alert.z_scores === 'string' ? JSON.parse(alert.z_scores) : alert.z_scores;
-
-  return (
-    <div style={styles.card}>
-      <div style={styles.cardHeader}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-          <div style={{...styles.scoreBadge, backgroundColor: `${color}20`, color: color, border: `1px solid ${color}50`}}>
-            {alert.score.toFixed(0)}
+      <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+        {sortedAlerts.length === 0 ? (
+          <div className="tactical-border bg-nereid-surface p-6 text-center font-mono text-nereid-textMuted text-sm">
+            NO ANOMALIES DETECTED IN OPERATIONAL RADIUS
           </div>
-          <div>
-            <strong style={{ fontSize: '1.05rem' }}>Zone: {alert.zone_id.toUpperCase()}</strong>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '2px' }}>
-              {new Date(alert.created_at).toLocaleString()}
-            </div>
-          </div>
-        </div>
-        {alert.score >= 60 && <AlertTriangle color="var(--red)" size={20} />}
+        ) : (
+          sortedAlerts.map(alert => {
+            const isCritical = alert.highest_z >= 5.0;
+            const isElevated = alert.highest_z >= 3.0 && alert.highest_z < 5.0;
+            const isStable = alert.highest_z < 3.0;
+            
+            let severityBlockStyle = "bg-nereid-border text-white";
+            let severityLabel = "STABLE";
+            let borderColor = "border-nereid-border";
+            let healthLabel = "NOMINAL";
+            
+            if (isCritical) {
+              severityBlockStyle = "bg-nereid-amber text-white";
+              severityLabel = "CRITICAL";
+              healthLabel = "ACTIVE_BROADCAST";
+              borderColor = "border-nereid-amber";
+            } else if (isElevated) {
+              severityBlockStyle = "bg-nereid-red text-white";
+              severityLabel = "ELEVATED";
+              healthLabel = "NOMINAL_DEGRADED";
+              borderColor = "border-nereid-red";
+            }
+
+            return (
+              <div 
+                key={alert.zone_id}
+                className={`tactical-border bg-nereid-surface hover:bg-nereid-panel transition-colors cursor-pointer relative overflow-hidden group shadow-sm`}
+                onClick={() => onSelectZone(alert.zone_id)}
+              >
+                {/* Left accent line */}
+                <div className={`absolute left-0 top-0 bottom-0 w-1 ${borderColor}`}></div>
+                
+                {/* Internal borders decorative */}
+                <div className="absolute top-1 left-2 w-2 border-t border-nereid-border opacity-50"></div>
+                <div className="absolute top-1 left-2 h-2 border-l border-nereid-border opacity-50"></div>
+                <div className="absolute bottom-1 right-2 w-2 border-b border-nereid-border opacity-50"></div>
+                <div className="absolute bottom-1 right-2 h-2 border-r border-nereid-border opacity-50"></div>
+
+                <div className="p-4 pl-6 flex justify-between items-center">
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className={`px-2 py-0.5 text-[10px] font-bold tracking-widest ${severityBlockStyle}`}>
+                        {severityLabel}
+                      </span>
+                      <h3 className="font-display font-semibold text-lg text-nereid-text uppercase tracking-wide">
+                        SECTOR {alert.zone_id}
+                      </h3>
+                    </div>
+                    
+                    <div className="flex gap-8 font-mono text-[10px]">
+                      <div>
+                        <p className="text-nereid-textMuted mb-1">FIRING SIGNALS</p>
+                        <div className="flex gap-1 text-nereid-amber">
+                          <span className="material-symbols-outlined text-[14px]">warning</span>
+                          <span className="material-symbols-outlined text-[14px]">sensors</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-nereid-textMuted mb-1">SYSTEM HEALTH</p>
+                        <p className="font-semibold text-nereid-text">{healthLabel}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Z-Score Ring */}
+                  <div className="flex flex-col items-center justify-center p-2 rounded-full border border-dashed border-nereid-border w-24 h-24">
+                    <span className={`font-display text-2xl font-bold tracking-tighter ${isCritical ? 'text-nereid-amber' : isElevated ? 'text-nereid-red' : 'text-nereid-text'}`}>
+                      {alert.highest_z.toFixed(2)}
+                    </span>
+                    <span className="font-mono text-[8px] text-nereid-textMuted mt-1">Z-SCORE INDEX</span>
+                  </div>
+                </div>
+
+                {/* Bottom decorative line */}
+                <div className="h-[2px] w-full bg-repeating-linear-gradient-to-r from-transparent to-nereid-border" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #a2b1c4, #a2b1c4 2px, transparent 2px, transparent 4px)'}}></div>
+              </div>
+            );
+          })
+        )}
       </div>
-
-      <p style={styles.narrative}>{alert.narrative}</p>
-
-      <div style={styles.chipContainer}>
-        {(parsedSignals || []).map(sig => {
-          const zval = (parsedZ && parsedZ[sig]) ? parsedZ[sig].toFixed(1) : '?';
-          return (
-            <div key={sig} style={styles.chip}>
-              {sig.toUpperCase()} 
-              <span style={{marginLeft: '6px', color: 'var(--text)', opacity: 0.8}}>
-                {zval > 0 ? `+${zval}σ` : `${zval}σ`}
-              </span>
-            </div>
-          )
-        })}
-      </div>
-
-      <div style={styles.actions}>
-        <button 
-          style={{...styles.btn, color: 'var(--green)', borderColor: 'var(--green)'}}
-          onClick={() => handleFeedback('validated')}
-          disabled={loading}
-        >
-          ✓ Validated
+      
+      <div className="mt-4 pt-4 border-t border-nereid-border flex justify-between">
+        <button className="flex items-center gap-2 px-4 py-2 bg-nereid-surface tactical-border text-nereid-text hover:bg-nereid-panel font-mono text-xs font-semibold">
+          <span className="material-symbols-outlined text-[16px]">download</span> EXPORT DATASET
         </button>
-        <button 
-          style={{...styles.btn, color: 'var(--text-dim)', borderColor: 'var(--border)'}}
-          onClick={() => handleFeedback('false_positive')}
-          disabled={loading}
-        >
-          ✗ False Positive
+        <button className="flex items-center gap-2 px-4 py-2 bg-nereid-surface tactical-border text-nereid-text hover:bg-nereid-panel font-mono text-xs font-semibold">
+          <span className="material-symbols-outlined text-[16px]">emergency</span> ESCALATE PRIORITY
         </button>
       </div>
     </div>
   );
-}
-
-const styles = {
-  emptyState: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    padding: '2rem'
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '24px',
-    borderBottom: '1px solid var(--border)',
-    paddingBottom: '12px'
-  },
-  badge: {
-    backgroundColor: 'var(--border)',
-    padding: '4px 10px',
-    borderRadius: '12px',
-    fontSize: '0.8rem',
-    fontWeight: 'bold'
-  },
-  card: {
-    backgroundColor: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '12px',
-    padding: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px'
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
-  },
-  scoreBadge: {
-    width: '42px',
-    height: '42px',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    fontSize: '1.2rem'
-  },
-  narrative: {
-    margin: 0,
-    fontSize: '0.95rem',
-    lineHeight: '1.5',
-    color: 'var(--text)'
-  },
-  chipContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '8px'
-  },
-  chip: {
-    backgroundColor: 'var(--bg)',
-    border: '1px solid var(--border)',
-    padding: '4px 8px',
-    borderRadius: '6px',
-    fontSize: '0.75rem',
-    fontWeight: '600',
-    color: 'var(--accent)'
-  },
-  actions: {
-    display: 'flex',
-    gap: '12px',
-    marginTop: '4px'
-  },
-  btn: {
-    flex: 1,
-    background: 'none',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    padding: '8px 0',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
-    transition: 'opacity 0.2s',
-  }
 };
+
+export default AlertFeed;

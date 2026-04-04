@@ -1,121 +1,26 @@
-:root {
-  /* Dark theme (default) */
-  --bg: #0a0f1c;
-  --surface: #111827;
-  --border: #1e3a5f;
-  --accent: #00c2ff;
-  --text: #c8dff5;
-  --text-dim: #4a7a9b;
-  --red: #ff4d6d;
-  --amber: #ffb347;
-  --green: #3ddc84;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body.light-theme {
-  /* Light theme */
-  --bg: #f0f4f8;
-  --surface: #ffffff;
-  --border: #d1dde8;
-  --text: #1a2a3a;
-  --text-dim: #5a7a9b;
+@layer utilities {
+  .tactical-border {
+    border: 1px solid theme('colors.nereid.border');
+  }
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--text);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* Global Grid Layout for App */
-.app-container {
-  display: grid;
-  grid-template-columns: 60% 40%;
-  grid-template-rows: 56px calc(100vh - 56px);
-  grid-template-areas:
-    "nav nav"
-    "map feed";
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
-.map-area {
-  grid-area: map;
-  height: 100%;
-  position: relative;
-  border-right: 1px solid var(--border);
-}
-
-.feed-area {
-  grid-area: feed;
-  height: 100%;
-  overflow-y: auto;
-  background-color: var(--bg);
-}
-
-/* Map specific pulses */
-@keyframes pulseRing {
-  0% {
-    transform: scale(0.5);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(3);
-    opacity: 0;
-  }
-}
-
-.custom-ring-marker {
-  background: transparent;
-  border: none;
-}
-
-.pulse-ring {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: var(--red);
-  animation: pulseRing 1.5s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
-}
-
-/* Zone Popup CSS */
-.zone-popup-backdrop {
-  position: fixed;
-  top: 56px;
-  left: 0;
-  width: 100vw;
-  height: calc(100vh - 56px);
-  background-color: rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.zone-popup-panel {
-  width: 50%;
-  height: 100%;
-  background-color: var(--bg);
-  border-left: 1px solid var(--border);
-  padding: 32px;
-  overflow-y: auto;
-  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-  animation: slideInRight 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  /* Grid paper graph background */
+  background-color: theme('colors.nereid.bg');
+  background-image: linear-gradient(theme('colors.nereid.surface') 1px, transparent 1px),
+    linear-gradient(90deg, theme('colors.nereid.surface') 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: theme('colors.nereid.text');
 }
 
 /* Skeleton Loading CSS */
 .skeleton-pulse {
-  background: linear-gradient(-90deg, var(--surface) 0%, var(--border) 50%, var(--surface) 100%);
+  background: linear-gradient(-90deg, theme('colors.nereid.panel') 0%, theme('colors.nereid.surface') 50%, theme('colors.nereid.panel') 100%);
   background-size: 400% 400%;
   animation: skeletonPulse 1.2s ease-in-out infinite;
 }
@@ -123,4 +28,27 @@ body {
 @keyframes skeletonPulse {
   0% { background-position: 0% 0%; }
   100% { background-position: -135% 0%; }
+}
+
+/* Custom Scrollbar for Tactical Windows */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: theme('colors.nereid.bg');
+}
+::-webkit-scrollbar-thumb {
+  background: theme('colors.nereid.border');
+  border-radius: 3px;
+}
+
+/* Leaflet map base overrides for light UI */
+.leaflet-container {
+  background: theme('colors.nereid.bg') !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
 }
