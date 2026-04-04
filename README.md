@@ -1,100 +1,321 @@
 <div align="center">
- <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=00f2ff,050505&height=320&section=header&text=N.E.R.E.I.D.&fontSize=90&fontAlign=50&fontAlignY=35&desc=Neural%20Environmental%20Risk%20Evaluation%20%26%20Incident%20Detection&descAlign=50&descAlignY=60&descFontSize=25&animation=fadeIn&stroke=ffffff&fontColor=ffffff" width="100%" />
+
+  <img src="https://img.shields.io/badge/🌊-NEREID-blue?style=for-the-badge&labelColor=0a192f" alt="NEREID Logo">
+  
+  # 🌊 NEREID - Neural Environmental Risk Evaluation & Incident Detection
+  
+  ### *Tactical Marine Environmental Monitoring & Anomaly Detection*
+  
+  <p>
+    <img src="https://img.shields.io/badge/React_Vite-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React Vite">
+    <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+    <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+    <img src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite">
+    <img src="https://img.shields.io/badge/Ollama_Gemma3-4285F4?style=flat-square&logo=google&logoColor=white" alt="Ollama AI">
+  </p>
+
 </div>
+
+<!-- Terminal Intro Animation -->
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&duration=2000&pause=800&color=00F2FF&center=true&width=700&lines=Initializing+NEREID+Tactical+System...;Loading+Marine+Telemetry+Signatures...;Connecting+Local+Ollama+Inference...;Activating+Z-Score+Anomaly+Detection...;System+Ready+for+Command+Review!" alt="Terminal Animation">
+</div>
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="Divider">
+
+## 🎯 Problem & Inspiration
+
+<table>
+<tr>
+<td>
+
+Marine ecosystems and coastal infrastructure face **critical threats** from subtle environmental shifts:
+
+- 🔴 **Signal Overload** – Operators are drowned in raw sonar, thermal, and atmospheric metrics lacking context.
+- 🔴 **Delayed Intelligence** – Processing data through cloud APIs incurs latency and risks data interception.
+- 🔴 **Fragmented Threat Detection** – Identifying anomalies across overlapping variables (SST, Wind, Chlorophyll) is extremely difficult manually.
+- 🔴 **Action Paralysis** – Lack of direct translation from data anomalies to clear tactical procedures.
+
+**NEREID** solves these problems with a military-grade, fully offline intelligent dashboard that transforms raw marine telemetry into actionable, AI-narrated threat matrices.
+
+</td>
+<td width="35%">
+
+### 🖥️ Tactical HUD Design
+Engineered from the ground up to mimic a high-density, command-center interface.
+
+### 🤖 Offline Agentic Execution
+Locally hosted Models (Gemma3 via Ollama) ensure zero data leakage and total air-gapped readiness.
+
+</td>
+</tr>
+</table>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=000000,001f3f,00F2FF&height=100&section=divider">
+
+## 📸 Dashboard Interface Highlights & Explanations
+
+Here is a visual breakdown of the NEREID Tactical UI in action:
 
 <div align="center">
-  <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.herokuapp.com?font=Space+Grotesk&size=26&duration=2500&pause=1000&color=00F2FF&center=true&vCenter=true&width=800&height=100&lines=Tactical+Marine+Environmental+Monitoring;AI-Powered+Anomaly+Detection;Real-Time+Telemetry+%26+Risk+Mapping;Offline-Capable+Local+LLM+Integration" alt="Typing SVG" />
-  </a>
+  
+### 1. Global Context & Entry Status
+<img src="doc-images/image1.jpg" width="100%" alt="Entry and Context Map View" />
+**Description:** The primary map interface. Shows live Sector Entry Statuses (like MB-01 PORT_ENT), real-time environmental telemetry (SST Avg, Wind Stress), and the aggregate Regional Risk Index. Map markers indicate dynamic anomaly severity across Mumbai's coastline.
+
+### 2. Insight & Explanation Breakdown
+<img src="doc-images/image2.jpg" width="100%" alt="Insight and AI Explanation" />
+**Description:** Detailed impact modeling triggered by a High-Risk Coastal Flooding event. Features local AI correlating abnormal SST (+3.80) with sustained wind patterns, rendering inundation probabilities (88%), and projecting critical infrastructure failure.
+
+### 3. Tactical Fog Decision & Action Dashboard
+<img src="doc-images/image3.jpg" width="100%" alt="Tactical Protocol Dashboard" />
+**Description:** The action center. When a regional failure emerges (e.g., Zone Alpha-7 Impact Radius), this screen displays real-time protocol logs and active asset readiness. It provides immediate triggers to Initiate Regional Alerts, Notify Authorities, or Deploy Emergency Responses.
+
+### 4. Automated Anomaly Detection Matrix
+<img src="doc-images/image4.jpg" width="100%" alt="Risk Matrix Priority Queue" />
+**Description:** A live priority queue sorting marine sectors by Z-Score Index. Distinguishes Critical (MB-04 Versova at 9.42) from Elevated (MB-02 Worli) threats, visualizing threat proximity and providing quick export and escalation paths.
+
 </div>
 
----
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-## <img src="https://user-images.githubusercontent.com/74038190/216122069-5b8169d7-1d8e-4a13-b245-a8e4176c99f8.png" width="30" /> About NEREID
+## 🧠 What It Does
 
-**NEREID (Neural Environmental Risk Evaluation & Incident Detection)** is a military-grade, offline-capable tactical dashboard designed for marine policy analysts and command-center operators. 
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="200">
+        <h3>📊</h3>
+        <b>Z-Score Anomaly Engine</b>
+        <br>Live statistical deviation detection
+      </td>
+      <td align="center" width="200">
+        <h3>🌍</h3>
+        <b>Tactical Map Overlays</b>
+        <br>Real-time sector visual feedback
+      </td>
+      <td align="center" width="200">
+        <h3>🤖</h3>
+        <b>Local AI Narration</b>
+        <br>Gemma3 threat translation
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="200">
+        <h3>📈</h3>
+        <b>Prophet Forecasting</b>
+        <br>Baseline variance predictions
+      </td>
+      <td align="center" width="200">
+        <h3>⚡</h3>
+        <b>Signal Aggregation</b>
+        <br>Multi-metric convergence
+      </td>
+      <td align="center" width="200">
+        <h3>📋</h3>
+        <b>Action Protocols</b>
+        <br>Immediate response commands
+      </td>
+    </tr>
+  </table>
+</div>
 
-It processes raw environmental telemetry (Sea Surface Temperature, Chlorophyll, Wind Stress) using advanced statistical models and **Local Generative AI** (Ollama/Gemma3) to detect, narrate, and rank coastal ecosystem anomalies in real-time. By operating entirely offline without cloud APIs, NEREID ensures maximum security and data privacy.
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="Divider">
 
-* <img src="https://user-images.githubusercontent.com/74038190/216122041-518ac897-8d92-4c6b-9b3f-ca01dcaf38ee.png" width="25" /> **Real-Time Anomaly Detection:** Rolling Z-score thresholds and Meta's Prophet baseline forecasting.
-* <img src="https://user-images.githubusercontent.com/74038190/216120981-b9507c36-0e04-4469-8e27-c99271b45ba5.png" width="25" /> **Actionable Intelligence:** Automated threat translation from JSON to plain English using LLMs.
-* <img src="https://user-images.githubusercontent.com/74038190/216121919-60befe4d-11c6-4227-8992-35221d12ff54.png" width="25" /> **Dynamic Priority Matrix:** Live calculation of risk scores based on multi-signal convergence.
-
-<br clear="all" />
-
-## <img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/7bb1e704-6026-48f9-8435-2f4d40101348" width="30" /> System Architecture & Tech Stack
+## ⚙️ Tech Stack
 
 <div align="center">
 
-| **Category** | **Technologies** |
-| :---: | :--- |
-| **Frontend** | <img src="https://skillicons.dev/icons?i=react,vite,tailwind,html,css&theme=dark" /> <br/> *React, Vite, Tailwind CSS, Recharts, React-Leaflet*|
-| **Backend** | <img src="https://skillicons.dev/icons?i=python,fastapi,sqlite&theme=dark" /> <br/> *Python 3.11, FastAPI, SQLite (aiosqlite)*|
-| **AI / Machine Learning** | <img src="https://skillicons.dev/icons?i=sklearn,pandas&theme=dark" /> <br/> *Ollama (Gemma3:4b), Scikit-Learn, Prophet, Numpy* |
+### 🖥️ Frontend (Tactical HUD)
+⚛️ React • 📦 Vite • 🎨 Tailwind CSS • 🗺️ React-Leaflet  
+📊 Recharts • 🌐 Axios • 💎 Glassmorphism UI 
+
+### ⚙️ Backend (Data Engine)
+🐍 Python 3.11 • ⚡ FastAPI • 🗄️ SQLite (aiosqlite)  
+🔄 Pydantic Data Validation • ⏱️ Async Uvicorn Execution
+
+### 🤖 AI / Machine Learning
+🧠 Ollama (Gemma3:4b Engine) • 📈 Meta Prophet  
+🔢 Scikit-Learn • 🧮 Numpy / Pandas • 🛡️ Z-Score Statistical Gates
 
 </div>
 
-<br/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=000000,001f3f,00F2FF&height=100&section=divider&text=Features&fontColor=ffffff&fontSize=28&animation=twinkling">
 
-## <img src="https://user-images.githubusercontent.com/74038190/216127913-88de86d3-8437-45b9-a3b6-e746b47f655a.gif" width="30" /> Dashboard Interface Highlights
+## ✨ Core Features
 
-NEREID features a beautifully crafted, tactical heads-up display (HUD) providing comprehensive situational awareness at a glance.
+### 🔍 Precision Convergence Detection
+- **Multi-Sensor Baseline:** Synthesizes SST, Subsurface Convection, and Wind Stress simultaneously.
+- **Dynamic Thresholding:** Uses rolling mean/std Z-Scores to avoid false positives.
 
-### 1. Global Exploration & Telemetry 
-> **Focused Exploration View:** Visualizes real-time map plots along the coastline (e.g., Versova). Displays satellite thermal overlays, real-time z-score peaks for Sea Surface Temperature (SST), wind stress vectors, and an AI threat assessment suggesting reconnaissance deployment.
-<img src="doc-images/exploration.jpg" width="100%" alt="Focused Exploration View" />
+### 🤖 Neural Copilot (Offline)
+- **Zero-Latency Analysis:** Translates complex JSON arrays into clear tactical readouts.
+- **Privacy First:** Model runs entirely locally via Ollama, preventing classified data leakage.
+- **Context Awareness:** AI understands specific sector IDs and historical risk weights.
 
-### 2. Live Risk Matrix Queue 
-> **Risk Highlighting & Ranking:** A dedicated screen sorting active sector threats by their priority Z-Score index. It separates zones into **Critical** (Sector MB-04 Versova), **Elevated** (Sector MB-02 Worli), and **Stable** (Sector MB-09 Colaba) blocks dynamically, alongside high-entropy proximity threat visualizations.
-<img src="doc-images/risk-matrix.jpg" width="100%" alt="Risk Matrix Queue" />
+### 🎮 High-Density Command UI
+- **Military Aesthetic:** Built to prioritize dark-mode data consumption.
+- **Smooth Interaction:** Features sliding off-canvas telemetry panels, scanlines, and CSS radar beam overlays.
 
-### 3. Coastal Impact & AI Explanation
-> **Insight & Explanation (High Risk):** Deep-dive analysis of a potential coastal flooding event. An AI analysis panel correlates abnormal SST with sustained wind patterns, rendering predictive inundation depth models and calculating the probability of urban infrastructure failure alongside estimated physical hydro-force strain.
-<img src="doc-images/impact-explanation.jpg" width="100%" alt="Insight and AI Explanation" />
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="Divider">
 
-### 4. Command & Tactical Action Protocol
-> **Fog Decision & Action Dashboard:** The ultimate operator command center. Shows a real-time protocol log, specific impact radius maps for critically failing zones (e.g., Alpha-7), asset readiness metrics, and direct action triggers spanning from issuing regional alerts to deploying emergency response teams.
-<img src="doc-images/command-protocol.jpg" width="100%" alt="Tactical Action Protocol" />
+## 🏗️ System Architecture
 
----
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          TACTICAL LAYER                                  │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │               React / Vite Frontend Dashboard                   │   │
+│   │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │   │
+│   │  │ Sector Map   │  │ Alert Feed   │  │   Telemetry  │          │   │
+│   │  └──────────────┘  └──────────────┘  └──────────────┘          │   │
+│   │  ┌──────────────┐  ┌──────────────┐                            │   │
+│   │  │ Neural Chat  │  │ Charting UI  │                            │   │
+│   │  └──────────────┘  └──────────────┘                            │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
+│                                    │ Async API (Axios)                   │
+└────────────────────────────────────┼─────────────────────────────────────┘
+                                     │
+┌────────────────────────────────────┼─────────────────────────────────────┐
+│                          DECISION LAYER                                   │
+│         ┌──────────────────────────┴──────────────────────┐              │
+│         │              FastAPI Backend Servers            │              │
+│         │  ┌────────────────────────────────────────────┐ │              │
+│         │  │ Routes: Scorer, Zones, Signals, Queries    │ │              │
+│         │  └────────────────────────────────────────────┘ │              │
+│         └──────────────────────────┬──────────────────────┘              │
+└────────────────────────────────────┼─────────────────────────────────────┘
+                                     │
+          ┌──────────────────────────┼──────────────────────────┐
+          │                          │                          │
+          ▼                          ▼                          ▼
+┌──────────────────┐     ┌──────────────────┐      ┌──────────────────┐
+│   ML Pipeline    │     │      Local       │      │   Time-Series    │
+│    (Python)      │     │     Database     │      │     Forecasting  │
+│ ┌──────────────┐ │     │ ┌──────────────┐ │      │ ┌──────────────┐ │
+│ │ Z-Score      │ │     │ │ SQLite (DB)  │ │      │ │  Meta Prophet│ │
+│ │ Convergence  │ │     │ │ Zones / Feed │ │      │ │  Scikit      │ │
+│ └──────────────┘ │     │ └──────────────┘ │      │ └──────────────┘ │
+└──────────────────┘     └──────────────────┘      └──────────────────┘
+          │
+          ▼
+┌──────────────────┐
+│ Offline AI Shell │
+│ (Ollama)         │
+│ Gemma3 Inference │
+└──────────────────┘
+```
 
-## 🚀 Getting Started
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:000000,100:00F2FF&height=100&section=divider&text=Installation&fontColor=ffffff&fontSize=28">
 
-### 1. Install & Boot Local AI (Ollama)
+## 🚀 Quick Start Guide
+
+### Prerequisites
 ```bash
-# Install Ollama (https://ollama.ai/)
-curl -fsSL https://ollama.ai/install.sh | sh
+Node.js v18+
+Python 3.11+
+Ollama Engine (Local)
+```
 
-# Pull the Gemma3 model for fast, lightweight inference
+### 1️⃣ Clone the Repository
+```bash
+git clone <your-repo-url>
+cd airavat
+```
+
+### 2️⃣ Start Local AI Services
+```bash
+# Install Ollama and pull model
 ollama pull gemma3:4b
 ollama serve
 ```
 
-### 2. Backend Setup
+### 3️⃣ Backend Setup
 ```bash
 cd backend
 pip install -r requirements.txt
 
-# Generate synthetic historical data and build models
-python data/generate_data.py  
+# Run initial forecasting tests
+python test_prophet.py
 
-# Start the FastApi Server
+# Start Backend Server
 uvicorn main:app --reload --port 8000
 ```
 
-### 3. Frontend Setup
+### 4️⃣ Frontend Application
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Visit **`http://localhost:5173`** to access the tactical dashboard.
+Navigate to **`http://localhost:5173`** to enter the NEREID Command Center.
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="Divider">
+
+## 🔌 API Endpoints (Core)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/zones` | Retrieve all active marine sectors |
+| GET | `/api/zones/{zone_id}/telemetry` | Fetch historical signal arrays |
+| GET | `/api/alerts/active` | Get highest priority anomaly alerts |
+| POST | `/api/ai/query` | Prompt local Gemma3 for narration |
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 🧪 AI Integration Example
+
+NEREID translates raw mathematical anomalies into tactical narratives:
+
+### Input (Raw JSON from Z-Score convergence)
+```json
+{
+  "zone": "MB-04",
+  "sst_deviation": 3.82,
+  "wind_stress_spike": true,
+  "chlorophyll_drop": 0.14
+}
+```
+
+### Output (Ollama Generation via Prompt)
+```text
+"CRITICAL THREAT DETECTED: Sector MB-04 (Versova) is exhibiting severe thermohaline disruption. The correlation between abnormal SST (+3.82z) and sustained wind stress indicates an extreme risk of localized coastal infrastructure flooding. Confidence 94.2%. Recommend immediate deployment of reconnaissance drones and possible initiation of Coastal Alert Protocol 07-X."
+```
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=000000,001f3f,00F2FF&height=100&section=divider&text=Roadmap&fontColor=ffffff&fontSize=28">
+
+## 🗺️ Roadmap
+
+- ✅ **Phase 1**: Tactical Glassmorphism Layout
+- ✅ **Phase 2**: Prophet Baseline Time-Series modeling
+- ✅ **Phase 3**: Local AI Narration via Ollama
+- 🔄 **Phase 4**: Sonar/LIDAR Data Integration Modules
+- 📅 **Phase 5**: Multi-Region Sector Expansion
+- 📅 **Phase 6**: Secure WebSockets for sub-second updates
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" alt="Divider">
+
+## 👥 Meet Team
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <b>🌊 Airborne Surveillance & Oceanography Control</b>
+        <br>
+        Engineering secure, scalable, predictive environments.
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
 <div align="center">
-<h3><img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/7d484dc9-68a9-4ee6-a767-aea59035c12d" width="25" /> *"Data is the new compass; AI points the way."* <img src="https://github.com/Anmol-Baranwal/Cool-GIFs-For-GitHub/assets/74038190/7d484dc9-68a9-4ee6-a767-aea59035c12d" width="25" /></h3>
-
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=20&duration=3000&pause=2000&color=00F2FF&center=true&vCenter=true&width=600&lines=Thank+you+for+exploring+NEREID!;Built+for+the+Future+of+Marine+Intelligence." alt="Footer Animation" />
+  <sub>Built with ❤️ for Global Hackathon Teams</sub>
+  <br>
+  <sub>Safeguarding marine ecosystems through intelligence</sub>
 </div>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=000000,001f3f,00F2FF&height=120&section=footer">
